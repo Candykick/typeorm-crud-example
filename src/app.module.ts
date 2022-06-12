@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { WritingModule } from './writing/writing.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [WritingModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), WritingModule],
   //controllers: [AppController],
   //providers: [],
 })
