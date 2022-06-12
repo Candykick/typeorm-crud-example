@@ -4,16 +4,15 @@ import { ConfigService } from '@nestjs/config';
 export const databaseProviders = [
   {
     provide: 'DATA_SOURCE',
-    inject: [ConfigService],
-    useFactory: async (config: ConfigService) => {
+    useFactory: async () => {
       const dataSource = new DataSource({
         type: 'mariadb',
         // autoLoadEntities: true,
-        host: config.get('DB_HOST'), //'localhost',
-        port: +config.get<number>('DB_PORT'), //0,
-        username: config.get('DB_USER'), //'root',
-        password: config.get('DB_PASSWORD'), //'dufTlagltkfRk?',
-        database: config.get('DB_NAME'), //'nestjs',
+        host: 'cxmgkzhk95kfgbq4.cbetxkdyhwsb.us-east-1.rds.amazonaws.com\t',
+        port: 3306,
+        username: 'rq16yjqva15u2u80',
+        password: 'rzqm45gukjoo7au7',
+        database: 'pwpowbo4bpc4g7r3',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: process.env.NODE_ENV !== 'production',
       });
