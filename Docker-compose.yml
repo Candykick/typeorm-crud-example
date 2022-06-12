@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    networks:
+      - febnine-net
+    depends_on:
+      - mariadb
+  mariadb:
+    container_name: mariadb-typeorm-crud
+    # 맥북 M1의 경우 아래 옵션 적용
+    platform: linux/x86_64
+    image: mariadb
+    env_file:
+      - .env
+    ports:
+      - "33906:3306"
+    networks:
+      - febnine-net
+    volumes:
+      - mariadb:/var/lib/mariadb
+volumes:
+  mariadb:
+networks:
+  febnine-net:
