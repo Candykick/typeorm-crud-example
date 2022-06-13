@@ -1,29 +1,40 @@
 version: "3.7"
 services:
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3003:3003"
-    networks:
-      - febnine-net
-    depends_on:
-      - mariadb
   mariadb:
-    container_name: mariadb-typeorm-crud
-    # 맥북 M1의 경우 아래 옵션 적용
-    platform: linux/x86_64
-    image: mariadb
-    env_file:
-      - .env
+    image: mariadb:10
+    # docker run --name mariadb -d -p 33906:3306 --restart=always -e MYSQL_ROOT_PASSWORD=root mariadb
     ports:
       - "33906:3306"
-    networks:
-      - febnine-net
     volumes:
-      - mariadb:/var/lib/mariadb
-volumes:
-  mariadb:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    env_file: .env
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - backend
+    container_name: "mariadb-typeorm-crud"
+    restart: always
+
+  nestjs:
+    # docker build -t nestjs-typeorm-crud .
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    # docker run --name nestjs-typeorm-crud -d -p 3003:3003 --restart=always nestjs-typeorm-crud
+    # -d flag(백그라운드 실행)은 docker-compose up 시 같이 붙이면 된다.
+    ports:
+      - "3003:3003"
+    links:
+      - mariadb
+    env_file: .env
+    environment:
+      DB_HOST: mariadb-typeorm-crud
+    networks:
+      - backend
+    container_name: "nestjs-typeorm-crud"
+    restart: always
+
 networks:
-  febnine-net:
+  backend:
